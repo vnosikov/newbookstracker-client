@@ -3,21 +3,30 @@ import { css } from '@emotion/react';
 import { useTheme } from '@mui/material/styles';
 import { ListItem, ListItemText, Badge } from '@mui/material';
 import {  SerializedStyles } from '@emotion/serialize';
-import { IBookItem, ILanguage, ITString } from '../types';
+import { IBookItem, ILanguage, ILanguageExt, ITString } from '../types';
 
 const bookItemStyles: (arg: { read: Boolean}) => SerializedStyles =
   ({ read }) => css`
     background-color: ${read ? '#f5f5f5' : 'inherit'};
   `;
 
+const getDisplayString = (
+  selectedLang:ILanguageExt,
+  mainLang: ILanguage
+) => (
+  tString:ITString
+) => {
+  const activeLang = (selectedLang === 'default') ? mainLang : selectedLang;
+  if (tString[activeLang] !== null ) {
+    return tString[activeLang];
+  }
+  return tString[mainLang];
+} 
+
 const BookItem:FC<BookItemProps> = ({ book, selectedLang }) => {
-  const theme = useTheme();
-  console.log(theme);
-
-  const activeLang = (selectedLang === 'default') ? book.mainLang : selectedLang;
-
-  const authors = book.authors.map(author => author[activeLang]);
-  const displayName = book.title[activeLang];
+  const gds = getDisplayString(selectedLang, book.mainLang);
+  const authors = book.authors.map(author => gds(author));
+  const displayName = gds(book.title);
 
   return (
     <ListItem css={bookItemStyles({ read: book.read })}>
@@ -28,8 +37,8 @@ const BookItem:FC<BookItemProps> = ({ book, selectedLang }) => {
 }
 
 type BookItemProps = {
-  book: IBookItem
-  selectedLang: ILanguage | 'default',
+  book: IBookItem,
+  selectedLang: ILanguageExt,
 }
 
 export default BookItem;

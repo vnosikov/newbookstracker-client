@@ -1,5 +1,7 @@
 export type ILanguage = 'ru' | 'en';
 
+export type ILanguageExt = ILanguage | 'default';
+
 export type ITString = {
   ru: string | null,
   en: string | null,

@@ -5,7 +5,7 @@ import BookItem from './BookItem';
 import { List, MenuItem, Select } from '@mui/material';
 import { gql } from '@apollo/client';
 import QueryRenderer from './QueryRenderer';
-import { IBookItem, ILanguage } from './types';
+import { IBookItem, ILanguageExt } from './types';
 
 const BOOKS = gql`
   query GetBooks {
@@ -28,7 +28,7 @@ const BOOKS = gql`
 `;
 
 function App() {
-  const [selectedLang, setSelectedLang] = useState<ILanguage | 'default'>('default');
+  const [selectedLang, setSelectedLang] = useState<ILanguageExt>('default');
   return (
     <div>
       {/* @ts-ignore */}
