@@ -5,9 +5,9 @@ import { css } from '@emotion/react';
 import { TextField } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-const REGISTER = gql`
-  mutation Register($username: String!, $password: String!) {
-    register(username: $username, password: $password) {
+const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
       code
       success
       message
@@ -30,29 +30,21 @@ const buttonStyles = css`
   margin-top: 16px;
 `;
 
-const Register = () => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
   const [clientError, setClientError] = useState('');
 
-  const [register, { data, loading, error }] = useMutation(REGISTER);
+  const [login, { data, loading, error }] = useMutation(LOGIN);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setClientError('');
-    if (username.length === 0) {
-      setClientError('Username not specified');
-    } else if (password.length < 6) {
-      setClientError('Password needs to have at least six symbols');
-    } else if (password !== confirm) {
-      setClientError('Passwords do not match');
-    } else {
-      const { data } = await register({ variables: { username, password } });
-    }
+    const { data } = await login({ variables: { username, password } });
+    console.log('token: ', data.login);
   };
 
-  const displayError = clientError || (!data?.register.success && data?.register.message) || (error?.message);
+  const displayError = clientError || (!data?.login.success && data?.login.message) || (error?.message);
 
   return (
     <form css={formStyles} onSubmit={handleSubmit}>
@@ -72,14 +64,6 @@ const Register = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <TextField
-        css={inputStyles}
-        label="Confirm Password"
-        variant="outlined"
-        type="password"
-        value={confirm}
-        onChange={(e) => setConfirm(e.target.value)}
-      />
       <div>{displayError}</div>
       <LoadingButton
         css={buttonStyles}
@@ -95,4 +79,4 @@ const Register = () => {
 };
 
 
-export default Register;
+export default Login;
