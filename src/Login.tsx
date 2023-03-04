@@ -41,7 +41,7 @@ const Login = () => {
     event.preventDefault();
     setClientError('');
     const { data } = await login({ variables: { username, password } });
-    console.log('token: ', data.login);
+    localStorage.setItem('token', data.login.message);
   };
 
   const displayError = clientError || (!data?.login.success && data?.login.message) || (error?.message);
